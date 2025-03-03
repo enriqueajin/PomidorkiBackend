@@ -1,65 +1,80 @@
+DROP SEQUENCE IF EXISTS "user_id_seq";
+CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 START 1;
+
+DROP SEQUENCE IF EXISTS "status_id_seq";
+CREATE SEQUENCE "status_id_seq" INCREMENT BY 1 START 1;
+
+DROP SEQUENCE IF EXISTS "priority_id_seq";
+CREATE SEQUENCE "priority_id_seq" INCREMENT BY 1 START 1;
+
+DROP SEQUENCE IF EXISTS "task_id_seq";
+CREATE SEQUENCE "task_id_seq" INCREMENT BY 1 START 1;
+
+DROP SEQUENCE IF EXISTS "pomodoro_id_seq";
+CREATE SEQUENCE "pomodoro_id_seq" INCREMENT BY 1 START 1;
+
 DROP TABLE IF EXISTS "users";
 CREATE TABLE "users" (
-    user_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    display_name TEXT,
-    email TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    streak_count INTEGER NOT NULL DEFAULT 0,
-    last_pomodoro_date TIMESTAMPTZ,
-    avatar_url TEXT,
-    is_active BOOLEAN NOT NULL DEFAULT true,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    "user_id" bigint NOT NULL,
+    "display_name" VARCHAR(50),
+    "email" TEXT NOT NULL UNIQUE,
+    "password_hash" TEXT NOT NULL,
+    "streak_count" INTEGER NOT NULL,
+    "last_pomodoro_date" TIMESTAMP,
+    "avatar_url" TEXT,
+    "is_active" BOOLEAN NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
+    "updated_at" TIMESTAMP NOT NULL,
+    CONSTRAINT "users_pkey" PRIMARY KEY ("user_id")
 );
 
 DROP TABLE IF EXISTS "categories";
 CREATE TABLE "categories" (
-    user_id BIGINT NOT NULL,
-    category_name TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    PRIMARY KEY (user_id, category_name),
-    FOREIGN KEY (user_id) REFERENCES "users"(user_id)
+    "user_id" bigint NOT NULL,
+    "category_name" VARCHAR(20) NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
+    "updated_at" TIMESTAMP NOT NULL,
+    CONSTRAINT "categories_pkey" PRIMARY KEY ("user_id", "category_name")
 );
 
 DROP TABLE IF EXISTS "status";
 CREATE TABLE "status" (
-    status_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    name TEXT NOT NULL UNIQUE
+    "status_id" smallint NOT NULL,
+    "name" VARCHAR(15) NOT NULL UNIQUE,
+    CONSTRAINT "status_pkey" PRIMARY KEY ("status_id")
 );
 
 DROP TABLE IF EXISTS "priorities";
 CREATE TABLE "priorities" (
-    priority_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    name TEXT NOT NULL UNIQUE
+    "priority_id" smallint NOT NULL,
+    "name" VARCHAR(15) NOT NULL UNIQUE,
+    CONSTRAINT "priorities_pkey" PRIMARY KEY ("priority_id")
+
 );
 
 DROP TABLE IF EXISTS "tasks";
 CREATE TABLE "tasks" (
-    task_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    user_id BIGINT NOT NULL,
-    category_name TEXT NOT NULL,
-    title TEXT NOT NULL,
-    description TEXT,
-    due_date DATE NOT NULL,
-    status_id INTEGER NOT NULL,
-    target_pomodoros INTEGER NOT NULL,
-    priority_id INTEGER NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  	FOREIGN KEY (user_id) REFERENCES "users"(user_id),
-    FOREIGN KEY (category_name, user_id) REFERENCES "categories"(category_name, user_id),
-    FOREIGN KEY (status_id) REFERENCES "status"(status_id),
-    FOREIGN KEY (priority_id) REFERENCES "priorities"(priority_id)
+    "task_id" bigint NOT NULL,
+    "user_id" bigint NOT NULL,
+    "category_name" VARCHAR(20) NOT NULL,
+    "title" VARCHAR(100) NOT NULL,
+    "description" TEXT,
+    "due_date" TIMESTAMP NOT NULL,
+    "status_id" smallint NOT NULL,
+    "target_pomodoros" smallint NOT NULL,
+    "priority_id" smallint NOT NULL,
+    "created_at" TIMESTAMP NOT NULL,
+    "updated_at" TIMESTAMP NOT NULL,
+    CONSTRAINT "tasks_pkey" PRIMARY KEY ("task_id")
+
 );
 
 DROP TABLE IF EXISTS "pomodoros";
 CREATE TABLE "pomodoros" (
-    pomodoro_id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    user_id BIGINT NOT NULL,
-    task_id BIGINT NOT NULL,
-    ended_at TIMESTAMPTZ NOT NULL,
-    started_at TIMESTAMPTZ NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES "users"(user_id),
-    FOREIGN KEY (task_id) REFERENCES "tasks"(task_id)
+    "pomodoro_id" bigint NOT NULL,
+    "user_id" bigint NOT NULL,
+    "task_id" bigint NOT NULL,
+    "ended_at" TIMESTAMP NOT NULL,
+    "started_at" TIMESTAMP NOT NULL,
+    CONSTRAINT "pomodoros_pkey" PRIMARY KEY ("pomodoro_id")
 );
