@@ -1,17 +1,17 @@
---DROP SEQUENCE IF EXISTS "user_id_seq";
---CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 START 1;
---
---DROP SEQUENCE IF EXISTS "status_id_seq";
---CREATE SEQUENCE "status_id_seq" INCREMENT BY 1 START 1;
---
---DROP SEQUENCE IF EXISTS "priority_id_seq";
---CREATE SEQUENCE "priority_id_seq" INCREMENT BY 1 START 1;
---
---DROP SEQUENCE IF EXISTS "task_id_seq";
---CREATE SEQUENCE "task_id_seq" INCREMENT BY 1 START 1;
---
---DROP SEQUENCE IF EXISTS "pomodoro_id_seq";
---CREATE SEQUENCE "pomodoro_id_seq" INCREMENT BY 1 START 1;
+DROP SEQUENCE IF EXISTS "user_id_seq";
+CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 START 1;
+
+DROP SEQUENCE IF EXISTS "status_id_seq";
+CREATE SEQUENCE "status_id_seq" INCREMENT BY 1 START 1;
+
+DROP SEQUENCE IF EXISTS "priority_id_seq";
+CREATE SEQUENCE "priority_id_seq" INCREMENT BY 1 START 1;
+
+DROP SEQUENCE IF EXISTS "task_id_seq";
+CREATE SEQUENCE "task_id_seq" INCREMENT BY 1 START 1;
+
+DROP SEQUENCE IF EXISTS "pomodoro_id_seq";
+CREATE SEQUENCE "pomodoro_id_seq" INCREMENT BY 1 START 1;
 
 DROP TABLE IF EXISTS "users";
 CREATE TABLE "users" (
