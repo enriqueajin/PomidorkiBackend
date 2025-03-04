@@ -30,4 +30,12 @@ class StatusController(private val statusService: StatusService) {
             ResponseEntity(HttpStatus.CONFLICT)
         }
     }
+
+    @GetMapping(path = ["/{id}"])
+    fun readOneStatus(@PathVariable("id") statusId: Int): ResponseEntity<StatusDto> {
+        val retrievedStatus = statusService.get(statusId)?.toDto()
+        return retrievedStatus?.let {
+            ResponseEntity(it, HttpStatus.OK)
+        } ?: ResponseEntity(HttpStatus.NOT_FOUND)
+    }
 }

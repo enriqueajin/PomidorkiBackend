@@ -3,6 +3,7 @@ package com.enridev.pomidorki.services.impl
 import com.enridev.pomidorki.domain.entities.StatusEntity
 import com.enridev.pomidorki.repositories.StatusRepository
 import com.enridev.pomidorki.services.StatusService
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,4 +16,5 @@ class StatusServiceImpl(private val statusRepository: StatusRepository): StatusS
         return statusRepository.save(statusEntity)
     }
 
+    override fun get(statusId: Int): StatusEntity? = statusRepository.findByIdOrNull(statusId)
 }
