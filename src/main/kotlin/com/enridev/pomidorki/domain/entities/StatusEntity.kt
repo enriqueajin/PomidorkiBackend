@@ -9,7 +9,7 @@ data class StatusEntity(
     @Column(name = "status_id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "status_id_seq")
     @SequenceGenerator(name = "status_id_seq", allocationSize = 1)
-    val id: Int,
+    val id: Int?,
 
     @Column(nullable = false, unique = true)
     val name: String

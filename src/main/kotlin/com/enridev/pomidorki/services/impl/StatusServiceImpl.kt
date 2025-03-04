@@ -7,5 +7,12 @@ import org.springframework.stereotype.Service
 
 @Service
 class StatusServiceImpl(private val statusRepository: StatusRepository): StatusService {
+
     override fun list(): List<StatusEntity> = statusRepository.findAll()
+
+    override fun create(statusEntity: StatusEntity): StatusEntity {
+        require(statusEntity.id == null)
+        return statusRepository.save(statusEntity)
+    }
+
 }
