@@ -3,6 +3,7 @@ package com.enridev.pomidorki.services.impl
 import com.enridev.pomidorki.domain.entities.StatusEntity
 import com.enridev.pomidorki.repositories.StatusRepository
 import com.enridev.pomidorki.services.StatusService
+import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
@@ -17,4 +18,11 @@ class StatusServiceImpl(private val statusRepository: StatusRepository): StatusS
     }
 
     override fun get(statusId: Int): StatusEntity? = statusRepository.findByIdOrNull(statusId)
+
+    @Transactional
+    override fun fullUpdate(statusId: Int, statusEntity: StatusEntity): StatusEntity {
+        check(statusRepository.existsById(statusId))
+        val normalisedStatus = statusEntity.copy(id = statusId)
+        return statusRepository.save(normalisedStatus)
+    }
 }

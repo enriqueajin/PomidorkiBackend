@@ -38,4 +38,17 @@ class StatusController(private val statusService: StatusService) {
             ResponseEntity(it, HttpStatus.OK)
         } ?: ResponseEntity(HttpStatus.NOT_FOUND)
     }
+
+    @PutMapping(path = ["/{id}"])
+    fun fullUpdateStatus(
+        @PathVariable("id") statusId: Int,
+        @RequestBody statusDto: StatusDto
+    ): ResponseEntity<StatusDto> {
+        return try {
+            val updatedStatus = statusService.fullUpdate(statusId, statusDto.toEntity()).toDto()
+            ResponseEntity(updatedStatus, HttpStatus.OK)
+        } catch(e: IllegalStateException) {
+            ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
+    }
 }
