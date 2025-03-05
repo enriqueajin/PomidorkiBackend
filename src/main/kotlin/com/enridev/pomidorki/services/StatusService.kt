@@ -10,4 +10,5 @@ interface StatusService {
     fun get(statusId: Int): StatusEntity?
     fun fullUpdate(statusId: Int, statusEntity: StatusEntity): StatusEntity
     fun partialUpdate(statusId: Int, statusUpdateRequest: StatusUpdateRequest): StatusEntity
+    fun delete(statusId: Int)
 }

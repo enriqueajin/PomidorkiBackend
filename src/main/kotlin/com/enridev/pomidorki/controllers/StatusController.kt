@@ -66,4 +66,14 @@ class StatusController(private val statusService: StatusService) {
             ResponseEntity(HttpStatus.BAD_REQUEST)
         }
     }
+
+    @DeleteMapping("/{id}")
+    fun deleteStatus(@PathVariable("id") statusId: Int): ResponseEntity<Unit> {
+        return try {
+            statusService.delete(statusId)
+            ResponseEntity(HttpStatus.NO_CONTENT)
+        } catch(e: IllegalArgumentException) {
+            ResponseEntity(HttpStatus.NOT_FOUND)
+        }
+    }
 }

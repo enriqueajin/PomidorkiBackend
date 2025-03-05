@@ -36,4 +36,11 @@ class StatusServiceImpl(private val statusRepository: StatusRepository): StatusS
         )
         return statusRepository.save(updatedStatus)
     }
+
+    @Transactional
+    override fun delete(statusId: Int) {
+        val existingStatus = statusRepository.existsById(statusId)
+        require(existingStatus)
+        statusRepository.deleteById(statusId)
+    }
 }
