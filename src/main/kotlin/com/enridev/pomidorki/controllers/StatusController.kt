@@ -1,9 +1,11 @@
 package com.enridev.pomidorki.controllers
 
 import com.enridev.pomidorki.domain.dto.StatusDto
+import com.enridev.pomidorki.domain.dto.StatusUpdateRequestDto
 import com.enridev.pomidorki.services.StatusService
 import com.enridev.pomidorki.toDto
 import com.enridev.pomidorki.toEntity
+import com.enridev.pomidorki.toStatusUpdateRequest
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -47,6 +49,19 @@ class StatusController(private val statusService: StatusService) {
         return try {
             val updatedStatus = statusService.fullUpdate(statusId, statusDto.toEntity()).toDto()
             ResponseEntity(updatedStatus, HttpStatus.OK)
+        } catch(e: IllegalStateException) {
+            ResponseEntity(HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @PatchMapping("/{id}")
+    fun partialUpdateStatus(
+        @PathVariable("id") statusId: Int,
+        @RequestBody statusUpdateRequestDto: StatusUpdateRequestDto
+    ): ResponseEntity<StatusDto> {
+        return try {
+            val updatedStatus = statusService.partialUpdate(statusId, statusUpdateRequestDto.toStatusUpdateRequest())
+            ResponseEntity(updatedStatus.toDto(), HttpStatus.OK)
         } catch(e: IllegalStateException) {
             ResponseEntity(HttpStatus.BAD_REQUEST)
         }

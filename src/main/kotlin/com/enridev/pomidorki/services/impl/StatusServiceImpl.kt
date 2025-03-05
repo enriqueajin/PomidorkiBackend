@@ -1,5 +1,6 @@
 package com.enridev.pomidorki.services.impl
 
+import com.enridev.pomidorki.domain.StatusUpdateRequest
 import com.enridev.pomidorki.domain.entities.StatusEntity
 import com.enridev.pomidorki.repositories.StatusRepository
 import com.enridev.pomidorki.services.StatusService
@@ -24,5 +25,15 @@ class StatusServiceImpl(private val statusRepository: StatusRepository): StatusS
         check(statusRepository.existsById(statusId))
         val normalisedStatus = statusEntity.copy(id = statusId)
         return statusRepository.save(normalisedStatus)
+    }
+
+    @Transactional
+    override fun partialUpdate(statusId: Int, statusUpdateRequest: StatusUpdateRequest): StatusEntity {
+        val retrievedStatus = statusRepository.findByIdOrNull(statusId)
+        checkNotNull(retrievedStatus)
+        val updatedStatus = retrievedStatus.copy(
+            name = statusUpdateRequest.name ?: retrievedStatus.name
+        )
+        return statusRepository.save(updatedStatus)
     }
 }
