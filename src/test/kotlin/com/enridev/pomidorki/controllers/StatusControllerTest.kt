@@ -10,9 +10,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 
 private const val STATUS_BASE_URL = "/v1/status"
 
@@ -59,6 +61,59 @@ class StatusControllerTest @Autowired constructor(
             status { isOk() }
             content { jsonPath("$[0].id", Matchers.equalTo(1)) }
             content { jsonPath("$[0].name", Matchers.equalTo("In progress")) }
+        }
+    }
+
+    @Test
+    fun `test that create status creates status and returns HTTP 201`() {
+        every {
+            statusService.create(any())
+        } answers {
+            firstArg()
+        }
+
+        mockkMvc.post(STATUS_BASE_URL) {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(
+                testStatusEntityA()
+            )
+        }.andExpect {
+            status { isCreated() }
+        }
+    }
+
+    @Test
+    fun `test that create status returns HTTP 400 when IllegalArgumentException is thrown`() {
+        every {
+            statusService.create(any())
+        } throws(IllegalArgumentException("ID must be null"))
+
+        mockkMvc.post(STATUS_BASE_URL) {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(
+                testStatusEntityA(1)
+            )
+        }.andExpect {
+            status { isBadRequest() }
+        }
+    }
+
+    @Test
+    fun `test that create status returns HTTP 409 when DataIntegrityViolationException is thrown`() {
+        every {
+            statusService.create(any())
+        } throws(DataIntegrityViolationException("Status name must be unique"))
+
+        mockkMvc.post(STATUS_BASE_URL) {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(
+                testStatusEntityA()
+            )
+        }.andExpect {
+            status { isConflict() }
         }
     }
 }
