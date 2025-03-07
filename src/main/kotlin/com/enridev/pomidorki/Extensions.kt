@@ -21,12 +21,7 @@ fun StatusEntity.toDto(): StatusDto {
 
 fun StatusUpdateRequestDto.toStatusUpdateRequest(): StatusUpdateRequest {
     return StatusUpdateRequest(
-        name = this.name
-    )
-}
-
-fun StatusUpdateRequest.toStatusUpdateRequestDto(): StatusUpdateRequestDto {
-    return StatusUpdateRequestDto(
+        id = this.id,
         name = this.name
     )
 }

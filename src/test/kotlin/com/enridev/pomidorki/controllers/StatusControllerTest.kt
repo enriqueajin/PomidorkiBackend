@@ -2,6 +2,7 @@ package com.enridev.pomidorki.controllers
 
 import com.enridev.pomidorki.services.StatusService
 import com.enridev.pomidorki.testStatusEntityA
+import com.enridev.pomidorki.testStatusRequestDtoA
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
@@ -12,10 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.put
+import org.springframework.test.web.servlet.*
 
 private const val STATUS_BASE_URL = "/v1/status"
 
@@ -178,6 +176,38 @@ class StatusControllerTest @Autowired constructor(
         mockkMvc.put("$STATUS_BASE_URL/999") {
             contentType = MediaType.APPLICATION_JSON
             accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isBadRequest() }
+        }
+    }
+
+    @Test
+    fun `test that status partial update updates status and returns HTTP 200 on successful update`() {
+        every {
+            statusService.partialUpdate(any(), any())
+        } answers { testStatusEntityA(222) }
+
+        mockkMvc.patch("$STATUS_BASE_URL/222") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(testStatusRequestDtoA(222))
+        }.andExpect {
+            status { isOk() }
+            content { jsonPath("$.id", Matchers.equalTo(222)) }
+            content { jsonPath("$.name", Matchers.equalTo("In progress")) }
+        }
+    }
+
+    @Test
+    fun `test that status partial update returns HTTP 400 when IllegalStateException is thrown`() {
+        every {
+            statusService.partialUpdate(any(), any())
+        } throws(IllegalStateException())
+
+        mockkMvc.patch("$STATUS_BASE_URL/222") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(testStatusRequestDtoA(222))
         }.andExpect {
             status { isBadRequest() }
         }
