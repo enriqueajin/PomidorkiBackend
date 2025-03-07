@@ -15,6 +15,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import org.springframework.test.web.servlet.put
 
 private const val STATUS_BASE_URL = "/v1/status"
 
@@ -148,6 +149,37 @@ class StatusControllerTest @Autowired constructor(
             accept = MediaType.APPLICATION_JSON
         }.andExpect {
             status { isNotFound() }
+        }
+    }
+
+    @Test
+    fun `test that status full update updates status and returns HTTP 200 on successful update`() {
+        every {
+            statusService.fullUpdate(any(), any())
+        } answers { secondArg() }
+
+        mockkMvc.put("$STATUS_BASE_URL/999") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+            content = objectMapper.writeValueAsString(testStatusEntityA(999))
+        }.andExpect {
+            status { isOk() }
+            content { jsonPath("$.id", Matchers.equalTo(999)) }
+            content { jsonPath("$.name", Matchers.equalTo("In progress")) }
+        }
+    }
+
+    @Test
+    fun `test that status full update returns HTTP 400 when IllegalStateException is thrown`() {
+        every {
+            statusService.fullUpdate(any(), any())
+        } throws (IllegalStateException())
+
+        mockkMvc.put("$STATUS_BASE_URL/999") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isBadRequest() }
         }
     }
 }
