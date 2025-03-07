@@ -212,4 +212,32 @@ class StatusControllerTest @Autowired constructor(
             status { isBadRequest() }
         }
     }
+
+    @Test
+    fun `test that delete status deletes status and returns HTTP 204 when status in the database`() {
+        every {
+            statusService.delete(any())
+        } answers { }
+
+        mockkMvc.delete("$STATUS_BASE_URL/1") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isNoContent() }
+        }
+    }
+
+    @Test
+    fun `test that delete status returns HTTP 404 when IllegalArgumentException is thrown`() {
+        every {
+            statusService.delete(any())
+        } throws(IllegalArgumentException())
+
+        mockkMvc.delete("$STATUS_BASE_URL/1") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isNotFound() }
+        }
+    }
 }
