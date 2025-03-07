@@ -116,4 +116,38 @@ class StatusControllerTest @Autowired constructor(
             status { isConflict() }
         }
     }
+
+    @Test
+    fun `test that read one status returns status and HTTP 200 when status in the database`() {
+        every {
+            statusService.get(any())
+        } answers {
+            testStatusEntityA(999)
+        }
+
+        mockkMvc.get("$STATUS_BASE_URL/999") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.id", Matchers.equalTo(999))
+            jsonPath("$.name", Matchers.equalTo("In progress"))
+        }
+    }
+
+    @Test
+    fun `test that read one status returns HTTP 404 when no status in the database`() {
+        every {
+            statusService.get(any())
+        } answers {
+            null
+        }
+
+        mockkMvc.get("$STATUS_BASE_URL/999") {
+            contentType = MediaType.APPLICATION_JSON
+            accept = MediaType.APPLICATION_JSON
+        }.andExpect {
+            status { isNotFound() }
+        }
+    }
 }
