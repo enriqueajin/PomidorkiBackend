@@ -29,8 +29,8 @@ CREATE TABLE "categories" (
     CONSTRAINT "fk_categories_user_id" FOREIGN KEY ("user_id") REFERENCES "users" ("user_id")
 );
 
-DROP TABLE IF EXISTS "status";
-CREATE TABLE "status" (
+DROP TABLE IF EXISTS "task_status";
+CREATE TABLE "task_status" (
     "status_id" smallint NOT NULL,
     "name" VARCHAR(15) NOT NULL UNIQUE,
     CONSTRAINT "pk_status" PRIMARY KEY ("status_id")
@@ -58,7 +58,7 @@ CREATE TABLE "tasks" (
     "updated_at" TIMESTAMP NOT NULL,
     CONSTRAINT "pk_tasks" PRIMARY KEY ("task_id"),
     CONSTRAINT "fk_tasks_user_id" FOREIGN KEY ("user_id") REFERENCES "users" ("user_id"),
-    CONSTRAINT "fk_tasks_status_id" FOREIGN KEY ("status_id") REFERENCES "status" ("status_id"),
+    CONSTRAINT "fk_tasks_status_id" FOREIGN KEY ("status_id") REFERENCES "task_status" ("status_id"),
     CONSTRAINT "fk_tasks_priorities_id" FOREIGN KEY ("priority_id") REFERENCES "priorities" ("priority_id"),
     CONSTRAINT "fk_tasks_user_id_category_name" FOREIGN KEY ("user_id", "category_name") REFERENCES "categories" ("user_id", "category_name")
 );

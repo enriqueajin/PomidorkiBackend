@@ -3,7 +3,7 @@ package com.enridev.pomidorki.domain.entities
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "status")
+@Table(name = "task_status")
 data class StatusEntity(
     @Id
     @Column(name = "status_id")
