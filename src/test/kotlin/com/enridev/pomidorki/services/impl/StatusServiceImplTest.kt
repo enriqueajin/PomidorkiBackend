@@ -82,14 +82,14 @@ class StatusServiceImplTest @Autowired constructor(
     @Test
     fun `test that status full update updates the status in the database`() {
         val existingStatus = statusRepository.save(testStatusEntityA())
-        val existingAuthorId = existingStatus.id!!
-        val updatedAuthor = testStatusEntityB(id = existingAuthorId)
-        val result = underTest.fullUpdate(existingAuthorId, updatedAuthor)
-        assertThat(result).isEqualTo(updatedAuthor)
+        val existingStatusId = existingStatus.id!!
+        val updatedStatus = testStatusEntityB(id = existingStatusId)
+        val result = underTest.fullUpdate(existingStatusId, updatedStatus)
+        assertThat(result).isEqualTo(updatedStatus)
 
-        val retrievedAuthor = statusRepository.findByIdOrNull(existingAuthorId)
-        assertThat(retrievedAuthor).isNotNull()
-        assertThat(retrievedAuthor).isEqualTo(updatedAuthor)
+        val retrievedStatus = statusRepository.findByIdOrNull(existingStatusId)
+        assertThat(retrievedStatus).isNotNull()
+        assertThat(retrievedStatus).isEqualTo(updatedStatus)
     }
 
     @Test
