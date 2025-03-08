@@ -133,4 +133,23 @@ class StatusServiceImplTest @Autowired constructor(
         assertThat(retrievedStatus).isNotNull()
         assertThat(retrievedStatus).isEqualTo(expected)
     }
+
+    @Test
+    fun `test that delete status throws IllegalArgumentException when the status does not exist in the database`() {
+        assertThrows<IllegalArgumentException> {
+            val nonExistingId = 888
+            underTest.delete(nonExistingId)
+        }
+    }
+
+    @Test
+    fun `test that delete status deletes the status when status present in the database`() {
+        val savedStatus = statusRepository.save(testStatusEntityA())
+        val existingStatusId = savedStatus.id!!
+
+        underTest.delete(existingStatusId)
+
+        val existsStatus = statusRepository.existsById(existingStatusId)
+        assertThat(existsStatus).isFalse()
+    }
 }
