@@ -2,6 +2,7 @@ package com.enridev.pomidorki.services.impl
 
 import com.enridev.pomidorki.repositories.StatusRepository
 import com.enridev.pomidorki.testStatusEntityA
+import com.enridev.pomidorki.testStatusEntityB
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -64,5 +65,28 @@ class StatusServiceImplTest @Autowired constructor(
     fun `test that get status returns null when status not present in the database`() {
         val result = underTest.get(248)
         assertThat(result).isNull()
+    }
+
+    @Test
+    fun `test that status full update throws IllegalStateException when id does not exists in the database`() {
+        assertThrows<IllegalStateException> {
+            val nonExistingId = 44
+            val updatedStatus = testStatusEntityB()
+
+            underTest.fullUpdate(nonExistingId, updatedStatus)
+        }
+    }
+
+    @Test
+    fun `test that status full update updates the status in the database`() {
+        val existingStatus = statusRepository.save(testStatusEntityA())
+        val existingAuthorId = existingStatus.id!!
+        val updatedAuthor = testStatusEntityB(id = existingAuthorId)
+        val result = underTest.fullUpdate(existingAuthorId, updatedAuthor)
+        assertThat(result).isEqualTo(updatedAuthor)
+
+        val retrievedAuthor = statusRepository.findByIdOrNull(existingAuthorId)
+        assertThat(retrievedAuthor).isNotNull()
+        assertThat(retrievedAuthor).isEqualTo(updatedAuthor)
     }
 }

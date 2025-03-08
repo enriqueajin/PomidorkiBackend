@@ -10,6 +10,13 @@ fun testStatusEntityA(id: Int? = null): StatusEntity {
     )
 }
 
+fun testStatusEntityB(id: Int? = null): StatusEntity {
+    return StatusEntity(
+        id = id,
+        name = "To-do"
+    )
+}
+
 fun testStatusRequestDtoA(id: Int? = null): StatusUpdateRequestDto {
     return StatusUpdateRequestDto(
         id = id,
