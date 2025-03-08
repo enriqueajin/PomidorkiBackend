@@ -1,8 +1,10 @@
 package com.enridev.pomidorki.services.impl
 
+import com.enridev.pomidorki.domain.StatusUpdateRequest
 import com.enridev.pomidorki.repositories.StatusRepository
 import com.enridev.pomidorki.testStatusEntityA
 import com.enridev.pomidorki.testStatusEntityB
+import com.enridev.pomidorki.testStatusRequestA
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -88,5 +90,47 @@ class StatusServiceImplTest @Autowired constructor(
         val retrievedAuthor = statusRepository.findByIdOrNull(existingAuthorId)
         assertThat(retrievedAuthor).isNotNull()
         assertThat(retrievedAuthor).isEqualTo(updatedAuthor)
+    }
+
+    @Test
+    fun `test that partial update throws IllegalStateException when status with id does not exists in the database`() {
+        assertThrows<IllegalStateException> {
+            val nonExistingId = 44
+            val updatedStatus = testStatusRequestA()
+
+            underTest.partialUpdate(nonExistingId, updatedStatus)
+        }
+    }
+
+    @Test
+    fun `test that partial update does not update the status when all values are null`() {
+        val existingStatus = statusRepository.save(testStatusEntityA())
+        val existingStatusId = existingStatus.id!!
+        val updatedStatus = underTest.partialUpdate(existingStatusId, StatusUpdateRequest())
+        assertThat(updatedStatus).isEqualTo(existingStatus)
+    }
+
+    @Test
+    fun `test that partial update updates name`() {
+        val newName = "New status"
+        val existingStatus = testStatusEntityA()
+        val expectedStatus = existingStatus.copy(
+            name = newName
+        )
+        val statusUpdateRequest = StatusUpdateRequest(
+            name = newName
+        )
+
+        val savedExistingStatus = statusRepository.save(existingStatus)
+        val existingStatusId = savedExistingStatus.id!!
+
+        val updatedStatus = underTest.partialUpdate(savedExistingStatus.id!!, statusUpdateRequest)
+
+        val expected = expectedStatus.copy(id = existingStatusId)
+        assertThat(updatedStatus).isEqualTo(expected)
+
+        val retrievedStatus = statusRepository.findByIdOrNull(existingStatusId)
+        assertThat(retrievedStatus).isNotNull()
+        assertThat(retrievedStatus).isEqualTo(expected)
     }
 }
