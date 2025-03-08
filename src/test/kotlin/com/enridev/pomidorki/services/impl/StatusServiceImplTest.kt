@@ -53,4 +53,16 @@ class StatusServiceImplTest @Autowired constructor(
         )
     }
 
+    @Test
+    fun `test that get status returns status when status present in the database`() {
+        val savedStatus = statusRepository.save(testStatusEntityA())
+        val result = underTest.get(savedStatus.id!!)
+        assertThat(result).isEqualTo(savedStatus)
+    }
+
+    @Test
+    fun `test that get status returns null when status not present in the database`() {
+        val result = underTest.get(248)
+        assertThat(result).isNull()
+    }
 }
