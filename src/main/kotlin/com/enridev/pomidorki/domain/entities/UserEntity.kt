@@ -19,10 +19,10 @@ data class UserEntity(
     @Column(name = "email", nullable = false, unique = true)
     val email: String,
 
-    @Column(name = "password_hash", nullable = false)
+    @Column(name = "password_hash")
     val password: String,
 
-    @Column(name = "streak_count", nullable = false)
+    @Column(name = "streak_count")
     val streakCount: Int,
 
     @Column(name = "last_pomodoro_date")
@@ -33,6 +33,9 @@ data class UserEntity(
 
     @Column(name = "firebase_uid", nullable = false, unique = true)
     val firebaseUid: String,
+
+    @Column(name = "auth_method", nullable = false)
+    val authMethod: String,
 
     @Column(name = "is_active", nullable = false)
     val isActive: Boolean,

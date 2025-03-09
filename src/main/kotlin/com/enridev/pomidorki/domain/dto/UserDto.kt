@@ -11,5 +11,8 @@ data class UserDto(
     val lastPomodoroDate: OffsetDateTime,
     val avatarUrl: String,
     val firebaseUid: String,
-    val isActive: Boolean
+    val authMethod: String,
+    val isActive: Boolean,
+    var createdAt: OffsetDateTime,
+    var updatedAt: OffsetDateTime,
 )
