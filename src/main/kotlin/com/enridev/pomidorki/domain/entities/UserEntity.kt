@@ -26,10 +26,10 @@ data class UserEntity(
     val streakCount: Int,
 
     @Column(name = "last_pomodoro_date")
-    val lastPomodoroDate: OffsetDateTime?,
+    val lastPomodoroDate: OffsetDateTime,
 
     @Column(name = "avatar_url")
-    val avatarUrl: String?,
+    val avatarUrl: String,
 
     @Column(name = "firebase_uid", nullable = false, unique = true)
     val firebaseUid: String,
