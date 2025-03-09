@@ -7,15 +7,17 @@ CREATE SEQUENCE IF NOT EXISTS pomodoro_id_seq START WITH 1 INCREMENT BY 1;
 DROP TABLE IF EXISTS "users";
 CREATE TABLE "users" (
     "user_id" bigint NOT NULL,
-    "display_name" VARCHAR(50),
+    "display_name" VARCHAR(50) NOT NULL,
     "email" VARCHAR(150) NOT NULL UNIQUE,
-    "password_hash" VARCHAR(100) NOT NULL,
-    "streak_count" INTEGER NOT NULL,
-    "last_pomodoro_date" TIMESTAMP,
+    "password_hash" VARCHAR(100),
+    "streak_count" INTEGER NOT NULL DEFAULT 0,
+    "last_pomodoro_date" TIMESTAMP WITH TIME ZONE,
     "avatar_url" VARCHAR(255),
-    "is_active" BOOLEAN NOT NULL,
-    "created_at" TIMESTAMP NOT NULL,
-    "updated_at" TIMESTAMP NOT NULL,
+    "firebase_uid" VARCHAR(255) UNIQUE NOT NULL,
+    "auth_method" VARCHAR(25) NOT NULL,
+    "is_active" BOOLEAN NOT NULL DEFAULT TRUE,
+    "created_at" TIMESTAMP WITH TIME ZONE NOT NULL,
+    "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL,
     CONSTRAINT "pk_users" PRIMARY KEY ("user_id")
 );
 
